@@ -7,7 +7,18 @@
 namespace {
 class UserControllerAutoRegister : public AutoRegisterBase {
    public:
-    UserControllerAutoRegister() { doRegister(); }
+    UserControllerAutoRegister() {
+        static bool constructed = false;
+        if (constructed) {
+            throw std::runtime_error(
+                "UserControllerAutoRegister constructed more than once!");
+        }
+        constructed = true;
+#ifdef DEBUG
+        printf("UserControllerAutoRegister constructed\n");
+#endif
+        doRegister();
+    }
 
    protected:
     void registerBean() override {
@@ -18,7 +29,9 @@ class UserControllerAutoRegister : public AutoRegisterBase {
     }
 
     void registerController() override {
+#ifdef DEBUG
         printf("Registering UserController\n");
+#endif
         core::register_controller(std::bind(
             &UserController::register_routes, &UserController::getInstance(),
             std::placeholders::_1, std::placeholders::_2));

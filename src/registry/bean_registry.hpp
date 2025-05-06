@@ -17,6 +17,8 @@ inline std::vector<BeanRegisterFunc>& get_bean_registry() {
 
 inline void register_bean(BeanRegisterFunc func) {
     get_bean_registry().push_back(std::move(func));
+#ifdef DEBUG
     printf("get_bean_registry() size: %zu\n", get_bean_registry().size());
+#endif
 }
 }  // namespace core
